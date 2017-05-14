@@ -1,0 +1,5 @@
+﻿TODO
+----
+
+Optimization
+	Remove empty cases in JumpsToFsmPass
