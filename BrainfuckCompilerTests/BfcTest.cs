@@ -124,6 +124,13 @@ namespace BrainfuckCompilerTests
             Assert.AreEqual("01", this.Execute(source));
         }
 
+        [TestMethod]
+        public void Bfc_Greater()
+        {
+            var source = this.Compile("print(1 > 2);");
+            Assert.AreEqual("\0", this.Execute(source));
+        }
+
         public string Compile(string source)
         {
             var brainfuckCode = new StringWriter();

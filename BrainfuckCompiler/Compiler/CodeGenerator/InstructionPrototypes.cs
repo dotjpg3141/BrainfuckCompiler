@@ -44,6 +44,8 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
 
         public static InsnProto Div { get; } = NewProto("div", 0, Int2, Int1);
 
+        public static InsnProto Greater { get; } = NewProto("greater", 0, Int2, Int1);
+
         public static InsnProto IfElseBegin { get; } = NewProto("ifElseBegin", 0, Int1, Void0);
 
         public static InsnProto IfElseElse { get; } = NewProto("ifElseElse", 0, Void0, Void0);
@@ -77,6 +79,8 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
         public static InsnProto ReadLocal { get; } = NewProto("readLocal", -1, Void0, Int1);
 
         public static InsnProto WriteLocal { get; } = NewProto("writeLocal", -1, Int1, Void0);
+
+        public static InsnProto ClearLocal { get; } = NewProto("clearLocal", 1, Int1, Void0);
 
         public static InsnProto UpdateScope { get; } = NewProto("updateScope", -1, Void0, Void0);
 

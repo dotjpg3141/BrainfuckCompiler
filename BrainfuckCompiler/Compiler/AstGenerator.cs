@@ -10,6 +10,7 @@ namespace BrainfuckCompiler.Compiler
         {
             [TokenType.Assign] = 1,
             [TokenType.Equal] = 3,
+            [TokenType.Greater] = 4,
             [TokenType.Add] = 5,
             [TokenType.Sub] = 5,
             [TokenType.Mul] = 6,

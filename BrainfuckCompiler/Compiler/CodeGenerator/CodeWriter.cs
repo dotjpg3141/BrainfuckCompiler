@@ -111,6 +111,11 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
                 this.Write(new Instruction(InsnProtos.PopInt));
                 this.Write(new Instruction(InsnProtos.PopInt));
             }
+            else if (proto == InsnProtos.Greater)
+            {
+                this.WriteSource("<[>>>+<<[->>[-]>+<<<]>>[-<+>]>[-<<<+>>>]<<<-<-]>>[-<<+>>]<");
+                this.Write(new Instruction(InsnProtos.PopInt));
+            }
             else if (proto == InsnProtos.UpdateScope)
             {
                 var types = instruction.Args
@@ -137,6 +142,14 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
                 var heap = this.MoveFromStackToHeap(varIndex);
                 var stack = this.MoveFromHeapToStack(varIndex);
                 this.WriteRaw($">>{heap}[-{stack}+{heap}]{stack}");
+            }
+            else if (proto == InsnProtos.ClearLocal)
+            {
+                int varIndex = instruction.Get(0);
+                var heap = this.MoveFromStackToHeap(varIndex);
+                var stack = this.MoveFromHeapToStack(varIndex);
+                var clear = this.currentVariableTypes[varIndex].Clear;
+                this.WriteRaw($"{heap}{clear}{stack}");
             }
             else if (proto == InsnProtos.IfElseBegin)
             {

@@ -18,12 +18,13 @@
 
         // Operators
         // TODO additional operators
-        Assign, // =
-        Equal,  // ==
-        Add,    // +
-        Sub,    // -
-        Mul,    // *
-        Div,    // /
+        Assign,  // =
+        Equal,   // ==
+        Add,     // +
+        Sub,     // -
+        Mul,     // *
+        Div,     // /
+        Greater, // >
 
         ParenthesisBegin,
         ParenthesisEnd,

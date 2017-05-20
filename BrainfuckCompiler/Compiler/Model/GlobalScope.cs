@@ -21,27 +21,28 @@ namespace BrainfuckCompiler.Compiler.Model
             var scope = new Scope(global)
             {
                 Functions =
-            {
-                Function.BuildIn("print", DataTypes.Void, new[] { DataTypes.Int }, new[]
                 {
-                    new Instruction(PrintChar),
-                    new Instruction(PopInt),
-                }),
-                Function.BuildIn("read", DataTypes.Int, new DataType[0], new[]
-                {
-                    new Instruction(ReadChar),
-                }),
-                Function.BuildInBinary("==", DataTypes.Int, new[]
-                {
-                    new Instruction(Sub),
-                    new Instruction(Not),
-                }),
-                Function.BuildInBinary("+", DataTypes.Int, new[] { new Instruction(Add) }),
-                Function.BuildInBinary("-", DataTypes.Int, new[] { new Instruction(Sub) }),
-                Function.BuildInBinary("*", DataTypes.Int, new[] { new Instruction(Mul) }),
-                Function.BuildInBinary("/", DataTypes.Int, new[] { new Instruction(Div) }),
-                Function.BuildInBinary("=", DataTypes.Int, new Instruction[0]),
-            }
+                    Function.BuildIn("print", DataTypes.Void, new[] { DataTypes.Int }, new[]
+                    {
+                        new Instruction(PrintChar),
+                        new Instruction(PopInt),
+                    }),
+                    Function.BuildIn("read", DataTypes.Int, new DataType[0], new[]
+                    {
+                        new Instruction(ReadChar),
+                    }),
+                    Function.BuildInBinary("==", DataTypes.Int, new[]
+                    {
+                        new Instruction(Sub),
+                        new Instruction(Not),
+                    }),
+                    Function.BuildInBinary(">", DataTypes.Int, new[] { new Instruction(Greater) }),
+                    Function.BuildInBinary("+", DataTypes.Int, new[] { new Instruction(Add) }),
+                    Function.BuildInBinary("-", DataTypes.Int, new[] { new Instruction(Sub) }),
+                    Function.BuildInBinary("*", DataTypes.Int, new[] { new Instruction(Mul) }),
+                    Function.BuildInBinary("/", DataTypes.Int, new[] { new Instruction(Div) }),
+                    Function.BuildInBinary("=", DataTypes.Int, new Instruction[0]),
+                }
             };
 
             var returnAddress = new Variable()

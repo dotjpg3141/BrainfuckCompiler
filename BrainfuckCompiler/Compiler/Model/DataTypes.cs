@@ -8,17 +8,17 @@ namespace BrainfuckCompiler.Compiler.Model
         private static readonly Dictionary<int, DataType> IdToType = new Dictionary<int, DataType>();
         private static readonly Dictionary<string, DataType> NameToType = new Dictionary<string, DataType>();
 
-        public static DataType Void { get; } = NewType(0, "void", null, null);
+        public static DataType Void { get; } = NewType(0, "void", null, null, null);
 
-        public static DataType Int { get; } = NewType(1, "int", "<", ">");
+        public static DataType Int { get; } = NewType(1, "int", "<", ">", "[-]");
 
-        public static DataType LaxBool { get; } = NewType(2, "lbool", "<", ">");
+        public static DataType LaxBool { get; } = NewType(2, "lbool", "<", ">", "[-]");
 
-        public static DataType Bool { get; } = NewType(3, "bool", "<", ">");
+        public static DataType Bool { get; } = NewType(3, "bool", "<", ">", "[-]");
 
-        public static DataType Fsm { get; } = NewType(4, "fsm", "<", ">");
+        public static DataType Fsm { get; } = NewType(4, "fsm", "<", ">", "[-]");
 
-        public static DataType String { get; } = NewType(5, "string", "<[<]<", ">>[>]");
+        public static DataType String { get; } = NewType(5, "string", "<[<]<", ">>[>]", null);
 
         public static DataType GetFromId(int id)
         {
@@ -40,9 +40,9 @@ namespace BrainfuckCompiler.Compiler.Model
             return NameToType[name];
         }
 
-        private static DataType NewType(int id, string name, string moveLeft, string moveRight)
+        private static DataType NewType(int id, string name, string moveLeft, string moveRight, string clear)
         {
-            var type = new DataType(id, name, moveLeft, moveRight);
+            var type = new DataType(id, name, moveLeft, moveRight, clear);
             IdToType[type.Id] = type;
             NameToType[type.Name] = type;
             return type;

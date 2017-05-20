@@ -71,6 +71,7 @@ namespace BrainfuckCompiler.Compiler
                             ? this.NewToken(TokenType.Equal, "==")
                             : this.NewToken(TokenType.Assign, "=");
                         break;
+                    case '>': current = this.NewTokenChar(TokenType.Greater); break;
                     case '+': current = this.NewTokenChar(TokenType.Add); break;
                     case '-': current = this.NewTokenChar(TokenType.Sub); break;
                     case '*': current = this.NewTokenChar(TokenType.Mul); break;
