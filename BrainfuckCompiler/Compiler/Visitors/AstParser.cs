@@ -114,7 +114,10 @@ namespace BrainfuckCompiler.Compiler.Visitors
             }
 
             var argTypes = func.Arguments.Select(arg => arg.Type).ToArray();
-            func.Function = context.FindFunction(func.TokenName.Value, argTypes) ?? throw new CompilerException(func.TokenName, $"cannot find function '{func.TokenName.Value}' with specified signature.");
+            func.Function = context.FindFunction(func.TokenName.Value, argTypes)
+                ?? throw new CompilerException(
+                    func.TokenName,
+                    $"cannot find function '{func.TokenName.Value}({string.Join<DataType>(",", argTypes)}).");
             return func;
         }
 

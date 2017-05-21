@@ -27,9 +27,20 @@ namespace BrainfuckCompiler.Compiler.Model
                         new Instruction(PrintChar),
                         new Instruction(PopInt),
                     }),
+                    Function.BuildIn("printNumber", DataTypes.Void, new[] { DataTypes.Int }, new[]
+                    {
+                        new Instruction(PrintInt),
+                        new Instruction(PopInt),
+                    }),
                     Function.BuildIn("read", DataTypes.Int, new DataType[0], new[]
                     {
                         new Instruction(ReadChar),
+                    }),
+                    Function.BuildIn("readDigit", DataTypes.Int, new DataType[0], new[]
+                    {
+                        new Instruction(ReadChar),
+                        new Instruction(PushInt, new int[] { '0' }),
+                        new Instruction(Sub),
                     }),
                     Function.BuildInBinary("==", DataTypes.Int, new[]
                     {

@@ -29,6 +29,28 @@ namespace BrainfuckCompilerTests
         }
 
         [TestMethod]
+        public void Bfc_PrintNumber()
+        {
+            var source = this.Compile("printNumber(1);");
+            Assert.AreEqual("1", this.Execute(source));
+
+            source = this.Compile("printNumber(23);");
+            Assert.AreEqual("23", this.Execute(source));
+
+            source = this.Compile("printNumber(255);");
+            Assert.AreEqual("255", this.Execute(source));
+        }
+
+        [TestMethod]
+        public void Bfc_ReadDigit()
+        {
+            var source = this.Compile("printNumber(readDigit());");
+            Assert.AreEqual("0", this.Execute(source, "0"));
+            Assert.AreEqual("3", this.Execute(source, "3"));
+            Assert.AreEqual("9", this.Execute(source, "9"));
+        }
+
+        [TestMethod]
         public void Bfc_Operators()
         {
             var operators = new Dictionary<string, int>()
@@ -122,6 +144,24 @@ namespace BrainfuckCompilerTests
         {
             var source = this.Compile("func id(x:int):int { return x; } print(id('0')); print(id('1'));");
             Assert.AreEqual("01", this.Execute(source));
+        }
+
+        [TestMethod]
+        public void Bfc_Sum_Recursive()
+        {
+            var source = this.Compile(@"
+func sum(n:int):int {
+    if (n) {
+        n = n + sum(n - 1);
+    }
+    return n;
+}
+printNumber(sum(readDigit()));
+");
+            Assert.AreEqual("0", this.Execute(source, "0"));
+            Assert.AreEqual("1", this.Execute(source, "1"));
+            Assert.AreEqual("6", this.Execute(source, "3"));
+            Assert.AreEqual("15", this.Execute(source, "5"));
         }
 
         [TestMethod]

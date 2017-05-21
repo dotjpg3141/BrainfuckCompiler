@@ -21,9 +21,6 @@
 
         public string Clear { get; }
 
-        public override string ToString()
-        {
-            return $"{this.Name}({this.Id})";
-        }
+        public override string ToString() => this.Name;
     }
 }
