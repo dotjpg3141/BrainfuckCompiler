@@ -140,14 +140,14 @@ namespace BrainfuckCompilerTests
         }
 
         [TestMethod]
-        public void Bfc_Function_v2()
+        public void Bfc_Function_TwoCalls()
         {
             var source = this.Compile("func id(x:int):int { return x; } print(id('0')); print(id('1'));");
             Assert.AreEqual("01", this.Execute(source));
         }
 
         [TestMethod]
-        public void Bfc_Sum_Recursive()
+        public void Bfc_Function_Recursive_Sum()
         {
             var source = this.Compile(@"
 func sum(n:int):int {

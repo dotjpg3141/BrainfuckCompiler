@@ -155,12 +155,12 @@ namespace BrainfuckCompiler.Compiler.Visitors
         public List<Instruction> VisitReturn(object context, AstStatement.ReturnStmt returnStmt)
         {
             var scope = returnStmt.Scope;
-            var returnAddress = scope.HeapIndexOf(scope.GlobalScope.ReturnAddress);
+            var returnAddress = scope.GetHeapLayoutUntil(scope.GlobalScope.ReturnAddress);
 
             var list = new List<Instruction>();
-            list.Add(WriteLocal, new int[] { returnAddress });
+            list.Add(WriteLocal, returnAddress);
             list.AddRange(returnStmt.Expression.Accept(scope, this));
-            list.Add(ReadLocal, new int[] { returnAddress });
+            list.Add(ReadLocal, returnAddress);
             return list;
         }
 
@@ -173,8 +173,8 @@ namespace BrainfuckCompiler.Compiler.Visitors
                 throw new InvalidOperationException("only integer type expected as variable for now");
             }
 
-            int id = scope.HeapIndexOf(variableStmt.Variable);
-            list.Add(WriteLocal, new int[] { id });
+            var id = scope.GetHeapLayoutUntil(variableStmt.Variable);
+            list.Add(WriteLocal, id);
 
             return list;
         }
@@ -231,7 +231,7 @@ namespace BrainfuckCompiler.Compiler.Visitors
 
                 var list = func.Arguments[1].Accept(context, this);
                 list.Add(DupInt);
-                list.Add(WriteLocal, new int[] { context.HeapIndexOf(variableExpression.Variable) });
+                list.Add(WriteLocal, context.GetHeapLayoutUntil(variableExpression.Variable));
                 return list;
             }
             else if (func.Function.IsBuildIn)
@@ -265,12 +265,12 @@ namespace BrainfuckCompiler.Compiler.Visitors
         {
             if (var.Type == DataTypes.Int)
             {
-                int heapIndex = context.HeapIndexOf(var.Variable);
+                var heapLayout = context.GetHeapLayoutUntil(var.Variable);
                 return new List<Instruction>()
                 {
-                    new Instruction(ReadLocal, new[] { heapIndex }),
+                    new Instruction(ReadLocal, heapLayout),
                     new Instruction(DupInt),
-                    new Instruction(WriteLocal, new[] { heapIndex }),
+                    new Instruction(WriteLocal, heapLayout),
                 };
             }
 

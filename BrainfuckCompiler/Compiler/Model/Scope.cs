@@ -42,8 +42,19 @@ namespace BrainfuckCompiler.Compiler.Model
             return localFunction ?? this.ParentScope?.FindFunction(name, argumentTypes);
         }
 
-        public int HeapIndexOf(Variable variable)
-            => this.GetHeapVariables().IndexOf(variable);
+        public int[] GetHeapLayoutUntil(Variable variable)
+        {
+            var varIndex = this.GetHeapVariables().IndexOf(variable);
+            if (varIndex == -1)
+            {
+                throw new InvalidOperationException($"could not find variable {variable}");
+            }
+
+            return this.GetHeapVariables()
+                .Take(varIndex + 1)
+                .Select(var => var.Type.Id)
+                .ToArray();
+        }
 
         public List<Variable> GetHeapVariables()
         {
