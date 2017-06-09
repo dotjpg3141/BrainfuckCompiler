@@ -15,24 +15,15 @@ Div,div[],,16,,"10,5",,,2,,
 "greater (a = 5, b = 3)",greater[],,16,,"5,3",,,1,,
 "greater (a = 3, b = 5)",greater[],,16,,"3,5",,,0,,
 "greater (a = 4, b = 4)",greater[],,16,,"4,4",,,0,,
-Read Local: 1,"updateScope[1];
-readLocal[0]",,16,,,5,,5,,
-Read Local: 2,"updateScope[1,1];
-readLocal[1]",,16,,,"2,3",,3,2,
-Write Local: 1,"updateScope[1];
-writeLocal[0]",,16,,5,,,,5,
-Write Local: 2,"updateScope[1,1];
-writeLocal[1]",,16,,2,3,,,"3,2",
-Write Local: Overwrite,"updateScope[1];
-writeLocal[0]",,16,,2,4,,,2,
-Move Over String: 2,"updateScope[5,1];
-readLocal[1]",,32,,,"0,1,2,3,0,1",,1,"0,1,2,3,0",
-Move Over String: 3,"updateScope[5,5,1];
-readLocal[2]",,32,,,"0,1,2,3,0,0,4,5,6,0,1",,1,"0,1,2,3,0,0,4,5,6,0",
-Clear Local (int),"updateScope[1];
-clearLocal[0];",,16,,,2,,,0,
-Clear Local (empty int),"updateScope[1];
-clearLocal[0];",,16,,,0,,,0,
+Read Local: 1,readLocal[1],,16,,,5,,5,,
+Read Local: 2,"readLocal[1,1]",,16,,,"2,3",,3,2,
+Write Local: 1,writeLocal[1];,,16,,5,,,,5,
+Write Local: 2,"writeLocal[1,1];",,16,,2,3,,,"3,2",
+Write Local: Overwrite,writeLocal[1],,16,,2,4,,,2,
+Move Over String: 2,"readLocal[5,1]",,32,,,"0,1,2,3,0,1",,1,"0,1,2,3,0",
+Move Over String: 3,"readLocal[5,5,1]",,32,,,"0,1,2,3,0,0,4,5,6,0,1",,1,"0,1,2,3,0,0,4,5,6,0",
+Clear Local (int),clearLocal[1];,,16,,,2,,,0,
+Clear Local (empty int),clearLocal[1];,,16,,,0,,,0,
 If Else - False,"ifElseBegin[];
   pushInt[11];
 ifElseElse[];

@@ -18,14 +18,9 @@ namespace BrainfuckCompiler.Compiler.Visitors
 
         public List<Instruction> VisitBlock(object context, AstStatement.BlockStmt blockStmt)
         {
-            List<Instruction> list = new List<Instruction>();
-            list.Add(UpdateScope, blockStmt.Scope.GetHeapVariables()
-                .Select(var => var.Type.Id)
-                .ToArray());
-            list.AddRange(blockStmt.Statements
+            return blockStmt.Statements
                 .SelectMany(stmt => stmt.Accept(context, this))
-                .ToList());
-            return list;
+                .ToList();
         }
 
         public List<Instruction> VisitDoWhile(object context, AstStatement.DoWhileStmt doWhileStmt)

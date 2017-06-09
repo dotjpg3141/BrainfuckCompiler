@@ -80,9 +80,7 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
 
         public static InsnProto WriteLocal { get; } = NewProto("writeLocal", -1, Int1, Void0);
 
-        public static InsnProto ClearLocal { get; } = NewProto("clearLocal", 1, Int1, Void0);
-
-        public static InsnProto UpdateScope { get; } = NewProto("updateScope", -1, Void0, Void0);
+        public static InsnProto ClearLocal { get; } = NewProto("clearLocal", -1, Int1, Void0);
 
         public static InsnProto GetByName(string insnName)
         {

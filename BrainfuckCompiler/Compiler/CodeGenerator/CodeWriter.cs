@@ -18,7 +18,6 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
         private int depthLevel = 0;
         private Stack<int> fsmCaseNumber = new Stack<int>();
         private Stack<int> fsmCaseCount = new Stack<int>();
-        private List<DataType> currentVariableTypes;
 
         public CodeWriter(TextWriter writer)
         {
@@ -116,40 +115,23 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
                 this.WriteSource("<[>>>+<<[->>[-]>+<<<]>>[-<+>]>[-<<<+>>>]<<<-<-]>>[-<<+>>]<");
                 this.Write(new Instruction(InsnProtos.PopInt));
             }
-            else if (proto == InsnProtos.UpdateScope)
-            {
-                var types = instruction.Args
-                    .Select(arg => DataTypes.GetFromId(arg)).ToList();
-                var invalidType = types
-                    .FirstOrDefault(tp => tp.MoveLeft == null || tp.MoveRight == null);
-                if (invalidType != null)
-                {
-                    throw new InvalidOperationException($"cannot move around type {invalidType}");
-                }
-
-                this.currentVariableTypes = types;
-            }
             else if (proto == InsnProtos.WriteLocal)
             {
-                int varIndex = instruction.Get(0);
-                var heap = this.MoveFromStackToHeap(varIndex);
-                var stack = this.MoveFromHeapToStack(varIndex);
-                this.WriteRaw($"{heap}[-]{stack}[-{heap}+{stack}]<<");
+                this.WriteHeapInstruction(
+                    instruction,
+                    (toHeap, toStack, _) => $"{toHeap}[-]{toStack}[-{toHeap}+{toStack}]<<");
             }
             else if (proto == InsnProtos.ReadLocal)
             {
-                int varIndex = instruction.Get(0);
-                var heap = this.MoveFromStackToHeap(varIndex);
-                var stack = this.MoveFromHeapToStack(varIndex);
-                this.WriteRaw($">>{heap}[-{stack}+{heap}]{stack}");
+                this.WriteHeapInstruction(
+                    instruction,
+                    (toHeap, toStack, _) => $">>{toHeap}[-{toStack}+{toHeap}]{toStack}");
             }
             else if (proto == InsnProtos.ClearLocal)
             {
-                int varIndex = instruction.Get(0);
-                var heap = this.MoveFromStackToHeap(varIndex);
-                var stack = this.MoveFromHeapToStack(varIndex);
-                var clear = this.currentVariableTypes[varIndex].Clear;
-                this.WriteRaw($"{heap}{clear}{stack}");
+                this.WriteHeapInstruction(
+                    instruction,
+                    (toHeap, toStack, type) => $"{toHeap}{type.Clear}{toStack}");
             }
             else if (proto == InsnProtos.IfElseBegin)
             {
@@ -251,22 +233,49 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
             }
         }
 
-        private string MoveFromHeapToStack(int varIndex)
+        private void WriteHeapInstruction(Instruction instruction, Func<string, string, DataType, string> format)
         {
-            int heapIndex = this.GetHeapIndex(varIndex);
-            return this.MoveRight(heapIndex, 0) + ">->>[->>]<";
+            var heapLayout = this.GetHeapLayout(instruction.Args);
+            int varIndex = heapLayout.Count - 1;
+            var heap = this.MoveFromStackToHeap(heapLayout, varIndex);
+            var stack = this.MoveFromHeapToStack(heapLayout, varIndex);
+            this.WriteRaw(format(heap, stack, heapLayout.Last()));
         }
 
-        private string MoveFromStackToHeap(int varIndex)
+        private List<DataType> GetHeapLayout(int[] heapTypes)
         {
-            int heapIndex = this.GetHeapIndex(varIndex);
-            return "<+[<<+]<" + this.MoveLeft(0, heapIndex);
+            if (heapTypes.Length == 0)
+            {
+                throw new InvalidOperationException("heap layout is empty");
+            }
+
+            var types = heapTypes.Select(arg => DataTypes.GetFromId(arg)).ToList();
+
+            var invalid = types.FirstOrDefault(tp => tp.MoveLeft == null || tp.MoveRight == null);
+            if (invalid != null)
+            {
+                throw new InvalidOperationException($"no movement commands found for type {invalid}");
+            }
+
+            return types;
         }
 
-        private string MoveRight(int startVarIndex, int endVarIndex)
+        private string MoveFromHeapToStack(List<DataType> heapLayout, int varIndex)
+        {
+            int heapIndex = this.GetHeapIndex(varIndex);
+            return this.MoveRight(heapLayout, heapIndex, 0) + ">->>[->>]<";
+        }
+
+        private string MoveFromStackToHeap(List<DataType> heapLayout, int varIndex)
+        {
+            int heapIndex = this.GetHeapIndex(varIndex);
+            return "<+[<<+]<" + this.MoveLeft(heapLayout, 0, heapIndex);
+        }
+
+        private string MoveRight(List<DataType> heapLayout, int startVarIndex, int endVarIndex)
         {
             Debug.Assert(startVarIndex >= endVarIndex, "startIndex must not be smaller than endIndex");
-            if (this.currentVariableTypes == null)
+            if (heapLayout == null)
             {
                 throw new InvalidOperationException("there is no scope layout specified");
             }
@@ -274,16 +283,16 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
             StringBuilder result = new StringBuilder();
             for (int i = startVarIndex - 1; i >= endVarIndex; i--)
             {
-                result.Append(this.currentVariableTypes[i].MoveRight);
+                result.Append(heapLayout[i].MoveRight);
             }
 
             return result.ToString();
         }
 
-        private string MoveLeft(int startVarIndex, int endVarIndex)
+        private string MoveLeft(List<DataType> heapLayout, int startVarIndex, int endVarIndex)
         {
             Debug.Assert(startVarIndex <= endVarIndex, "startIndex must not be greater than endIndex");
-            if (this.currentVariableTypes == null)
+            if (heapLayout == null)
             {
                 throw new InvalidOperationException("there is no scope layout specified");
             }
@@ -291,7 +300,7 @@ namespace BrainfuckCompiler.Compiler.CodeGenerator
             StringBuilder result = new StringBuilder();
             for (int i = startVarIndex; i < endVarIndex; i++)
             {
-                result.Append(this.currentVariableTypes[i].MoveLeft);
+                result.Append(heapLayout[i].MoveLeft);
             }
 
             return result.ToString();
